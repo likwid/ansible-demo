@@ -1,0 +1,24 @@
+listen "/opt/{{ app }}/shared/unicorn.sock"
+working_directory "/opt/{{ app }}/current"
+worker_processes 2
+pid "/opt/{{ app }}/shared/unicorn.pid"
+stdout_path "/opt/{{ app }}/shared/log/unicorn.stdout.log"
+stderr_path "/opt/{{ app }}/shared/log/unicorn.stderr.log"
+logger Logger.new("/opt/{{ app }}/shared/log/unicorn.log")
+
+before_fork do |server, worker|
+  old_pid = "/opt/{{ app }}/shared/unicorn.pid.oldbin"
+  if File.exists?(old_pid) && server.pid != old_pid
+    begin
+      Process.kill("QUIT", File.read(old_pid).to_i)
+    rescue Errno::ENOENT, Errno::ESRCH
+      # someone else did our job for us
+    end
+  end
+end
+
+if defined?(Bundler.settings)
+  before_exec do |server|
+    ENV['BUNDLE_GEMFILE'] = "/opt/{{ app }}/current/Gemfile"
+  end
+end

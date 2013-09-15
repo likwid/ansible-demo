@@ -1,0 +1,39 @@
+---
+- name: web | Install nginx
+  action: apt pkg=nginx state=present
+  sudo: yes
+- service: name=nginx state=started
+  sudo: yes
+- name: web | Configure nginx
+  action: template src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  sudo: yes
+  notify:
+  - reload nginx
+- name: web | Setup app folders 
+  action: file dest=/opt/${app}/shared/log owner=vagrant group=vagrant state=directory
+  sudo: yes
+- action: file dest=/opt/${app}/shared/config owner=vagrant group=vagrant state=directory
+  sudo: yes
+- action: file dest=/opt/${app} owner=vagrant group=vagrant state=directory recurse=true
+  sudo: yes
+- action: file dest=/var/run/${app} owner=vagrant group=vagrant state=directory
+  sudo: yes
+- name: web | Deploy from github
+  git: repo=https://github.com/${app_repo} dest=/opt/${app}/current
+- name: web | Configure unicorn for app
+  action: template src=unicorn.rb.j2 dest=/opt/${app}/shared/config/unicorn.rb owner=vagrant
+- name: web | Create nginx sites-enabled
+  action: file dest=/etc/nginx/sites-enabled owner=vagrant state=directory
+  sudo: yes
+- name: web | Configure nginx for app
+  action: template src=app.conf.j2 dest=/etc/nginx/sites-enabled/${app}.conf owner=vagrant
+  notify:
+  - reload nginx
+- name: web | Install upstart script
+  action: template src=app.upstart.conf.j2 dest=/etc/init/${app}.conf owner=root
+- service: name=${app} state=started
+  sudo: yes
+- name: web | Install bundler
+  action: command sudo gem install bundler creates=/usr/local/bin/bundle
+- name: web | Bundle the gems
+  action: command bundle install chdir=/opt/${app}/current

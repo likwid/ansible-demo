@@ -1,0 +1,19 @@
+---
+- hosts: vagrant
+  vars:
+    app: sample
+    user: vagrant
+  sudo: true
+  roles:
+    - common
+    - ruby-2.0.0
+    - web
+  handlers:
+    - name: reload nginx
+      action: service name=nginx state=reloaded
+    - name: restart monit
+      action: service name=monit state=restarted
+      sudo: yes
+    - name: restart ${app}
+      action: service name=${app} state=started
+      sudo: yes

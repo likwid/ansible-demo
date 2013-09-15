@@ -1,0 +1,41 @@
+---
+- name: Install ruby dependencies
+  apt: pkg={{ item }} state=present
+  with_items:
+    - libreadline-dev
+    - libssl-dev
+    - libyaml-dev
+    - zlib1g-dev
+- name: Download ruby
+  get_url: url=http://ftp.ruby-lang.org/pub/ruby/2.0/ruby-{{ ruby_version }}.tar.bz2
+           dest=/usr/local/src
+           sha256sum={{ ruby_checksum }}
+- name: Generate ruby install
+  template: src=install-ruby.j2
+            dest=/usr/local/src/install-ruby.sh
+            owner=root
+            group=root
+            mode=700
+- name: Run installer
+  command: /usr/local/src/install-ruby.sh
+           creates={{ ruby_location }}/bin/ruby
+- name: Install bundler
+  command: "{{ ruby_location }}/bin/gem install bundler
+           creates={{ ruby_location }}/bin/bundle"
+- name: Install unicorn
+  action: command sudo {{ ruby_location }}/bin/gem install unicorn
+- name: Make ruby symlinks
+  file: path=/usr/local/bin/{{ item }}
+        src={{ ruby_location }}/bin/{{ item }}
+        state=link
+  with_items:
+    - bundle
+    - erb
+    - gem
+    - irb
+    - rackup
+    - rake
+    - rdoc
+    - ri
+    - ruby
+    - unicorn

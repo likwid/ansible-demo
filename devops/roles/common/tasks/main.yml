@@ -1,0 +1,14 @@
+---
+- name: Upgrade apt packages
+  apt: upgrade=yes
+       update_cache=yes
+
+- name: Install common packages
+  apt: pkg={{ item }}
+  with_items:
+    - git
+    - ntp
+    - vim
+    - autoconf
+    - build-essential
+    - python-software-properties

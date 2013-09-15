@@ -1,0 +1,2 @@
+[vagrant]
+localhost ansible_ssh_port=2200 ansible_ssh_user=vagrant ansible_ssh_private_key_file=devops/keys/vagrant
