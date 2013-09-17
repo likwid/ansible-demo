@@ -10,23 +10,23 @@
   notify:
   - reload nginx
 - name: web | Setup app folders 
-  action: file dest=/opt/${app}/shared/log owner=vagrant group=vagrant state=directory
+  action: file dest=/opt/${app}/shared/log owner=${user} group=${user} state=directory
   sudo: yes
-- action: file dest=/opt/${app}/shared/config owner=vagrant group=vagrant state=directory
+- action: file dest=/opt/${app}/shared/config owner=${user} group=${user} state=directory
   sudo: yes
-- action: file dest=/opt/${app} owner=vagrant group=vagrant state=directory recurse=true
+- action: file dest=/opt/${app} owner=${user} group=${user} state=directory recurse=true
   sudo: yes
-- action: file dest=/var/run/${app} owner=vagrant group=vagrant state=directory
+- action: file dest=/var/run/${app} owner=${user} group=${user} state=directory
   sudo: yes
 - name: web | Deploy from github
   git: repo=https://github.com/${app_repo} dest=/opt/${app}/current
 - name: web | Configure unicorn for app
-  action: template src=unicorn.rb.j2 dest=/opt/${app}/shared/config/unicorn.rb owner=vagrant
+  action: template src=unicorn.rb.j2 dest=/opt/${app}/shared/config/unicorn.rb owner=${user}
 - name: web | Create nginx sites-enabled
-  action: file dest=/etc/nginx/sites-enabled owner=vagrant state=directory
+  action: file dest=/etc/nginx/sites-enabled owner=${user} state=directory
   sudo: yes
 - name: web | Configure nginx for app
-  action: template src=app.conf.j2 dest=/etc/nginx/sites-enabled/${app}.conf owner=vagrant
+  action: template src=app.conf.j2 dest=/etc/nginx/sites-enabled/${app}.conf owner=${user}
   notify:
   - reload nginx
 - name: web | Install upstart script
