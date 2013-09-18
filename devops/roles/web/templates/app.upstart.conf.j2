@@ -7,8 +7,8 @@ stop on runlevel [06]
 env PATH=/opt/{{ app }}/current:/opt/{{ app }}/shared/config:/opt/ruby/bin/:/usr/local/bin:/usr/bin:/bin
 env BUNDLE_GEMFILE=/opt/{{ app }}/current/Gemfile
 
-setuid vagrant
-setgid vagrant
+setuid {{ user }}
+setgid {{ group }}
 
 chdir /opt/{{ app }}/current
 pre-start exec unicorn -D -c /opt/{{ app }}/shared/config/unicorn.rb

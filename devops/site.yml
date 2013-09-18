@@ -3,6 +3,7 @@
   vars:
     app: sample
     user: vagrant
+    group: vagrant
   sudo: true
   roles:
     - common
