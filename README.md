@@ -1,7 +1,7 @@
 ansible-demo
 ============
 
-# Quick Demonstration of Ansible
+### Quick Demonstration of Ansible
 
 In this demo we are going to:
 
@@ -10,7 +10,7 @@ In this demo we are going to:
   3. Deploy Sinatra application
   
 
-# How to run:
+### How to run:
 
 vagrant up (make note of the ssh port that gets rebound)
 in devops/development inventory file, change the port to the aforementioned vagrant ssh port
