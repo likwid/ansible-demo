@@ -3,6 +3,9 @@ ansible-demo
 
 ### Quick Demonstration of Ansible
 
+Slide deck
+https://speakerdeck.com/likwid/ansible-radically-simple-infrastructure-management
+
 In this demo we are going to:
 
   1. Create a server in Amazon AWS
